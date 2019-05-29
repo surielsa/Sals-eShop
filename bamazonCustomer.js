@@ -1,7 +1,8 @@
 var mysql = require("mysql");
 var inquirer = require("inquirer");
+require("console.table");
 
-// create the connection information for the sql database
+
 var connection = mysql.createConnection({
   host: "localhost",
 
@@ -12,13 +13,32 @@ var connection = mysql.createConnection({
   user: "root",
 
   // Your password
-  password: "",
+  password: "password",
   database: "bamazon_db"
 });
 
-connection.connect(function(err) {
-    if (err) {
-      console.error("error connecting: " + err.stack);
-    }
-    loadProducts();
+connection.connect(function (err) {
+  if (err) throw err;
+  console.log("connected as id " + connection.threadId);
+  afterConnection();
+});
+
+function afterConnection() {
+  connection.query("SELECT * FROM products", function (err, res) {
+    if (err) throw err;
+    console.table(res);
+    start();
   });
+  
+  function start(){
+    inquirer.prompt ({
+      name: "product",
+      type: "list",
+      message: "What item would you like to buy?",
+      choices: [console.table(res)]
+
+
+    })
+  }
+}
+
