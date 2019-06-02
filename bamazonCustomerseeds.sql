@@ -4,16 +4,16 @@ CREATE DATABASE bamazon_db;
 USE bamazon_db;
 
 CREATE TABLE products (
-  item_id INT AUTO_INCREMENT NOT NULL,
-  product_name VARCHAR(45) NOT NULL,
-  department_name VARCHAR(45) NOT NULL,
+  item INT AUTO_INCREMENT NOT NULL,
+  product VARCHAR(45) NOT NULL,
+  department VARCHAR(45) NOT NULL,
   price DECIMAL(10,2) NOT NULL,
-  stock_quantity INT(10) NOT NULL,
-  primary key(item_id)
+  stock INT(10) NOT NULL,
+  primary key(item)
 );
 SELECT * FROM products;
 
-INSERT INTO products (product_name, department_name, price, stock_quantity )
+INSERT INTO products (product, department, price, stock)
 VALUES ("microwave", "appliances", 59.99, 200),
 ("laptop backpack", "accessories", 22.09, 175),
 ("instapot", "appliances", 79.95, 1000),
@@ -26,10 +26,3 @@ VALUES ("microwave", "appliances", 59.99, 200),
 ("Men's Suede Look Chelsea Boots", "apparel", 40.50, 250);
 
 SELECT * FROM products;
-
-SELECT department
-FROM products;
-
-SELECT * FROM products
-ORDER BY department;
-                          
