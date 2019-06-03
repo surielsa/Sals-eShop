@@ -33,17 +33,17 @@ function showProducts() {
   connection.query("SELECT * FROM products", function (err, res) {
     if (err) throw err;
     console.table(res);
-    promptCustomerForItem();
+    promptUserForItem();
   });
 }
 
-function promptCustomerForItem(inventory) {
+function promptUserForItem(inventory) {
   inquirer
     .prompt([
       {
         type: "input",
         name: "choice",
-        message: "What is the ID of the item you would like to buy? [Press 'E' to Escape]",
+        message: "What is the ID of the item you would like to buy? [Escape with E]",
         validate: function (val) {
           return !isNaN(val) || val.toLowerCase() === "e";
         }
@@ -53,7 +53,7 @@ function promptCustomerForItem(inventory) {
     .then(function (val) {
       checkIfShouldExit(val.choice);
       var choiceId = parseInt(val.choice);
-      var product = checkInventory(choiceId, inventory);
+      var product =checkInventory(choiceId, inventory);
 
       if (product) {
         customerQuantityChoice(product);
@@ -71,7 +71,7 @@ function customerQuantityChoice(product) {
       {
         type: "input",
         name: "quantity",
-        message: "How many would you like? [Press 'E' to Escape]",
+        message: "How many would you like? [Escape with E]",
         validate: function(val) {
           return val > 0 || val.toLowerCase() === "e";
         }
@@ -82,7 +82,7 @@ function customerQuantityChoice(product) {
       var quantity = parseInt(val.quantity);
 
       if (quantity > product.stock_quantity) {
-        console.log("\nNot Enough Product.");
+        console.log("\nNot Enough Product to fulfill order.");
         showProducts();
       }
       else {
@@ -95,21 +95,22 @@ function customerQuantityChoice(product) {
     connection.query("UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ?",
       [quantity, product.item_id],
       function (err, res) {
-        console.log("\nPurchse Successful " + quantity + " " + product.product_name + "Your total is.." + product.price + " \n");
+        console.log("\nPurchse Successful " + quantity + " " + product.product_name + "  Your total is.." + product.price + " \n");
         showProducts();
+        //checkInventory();
       }
     );
   }
 
-function checkInventory (choiceId, inventory) {
+function checkInventory(choiceId, inventory) {
   for (var i = 0; i < inventory.length; i++) {
     if (inventory[i].item_id === choiceId) {
       return inventory[i];
     }
   }
+  // Otherwise return null
   return null;
 }
-
 function checkIfShouldExit(choice) {
   if (choice.toLowerCase() === "e") {
     console.log("Enjoy your purchase!");
