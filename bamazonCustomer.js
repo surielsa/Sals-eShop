@@ -1,8 +1,9 @@
+
 var mysql = require("mysql");
 var inquirer = require("inquirer");
 //require("console.table");
-//require('cli-table3');
-require("cli-table");
+require("cli-table3");
+
 
 var connection = mysql.createConnection({
   host: "localhost",
@@ -10,17 +11,11 @@ var connection = mysql.createConnection({
   // Your port; if not 3306
   port: 3306,
 
-  user: "root",
 
+  user: "root",
   password: "password",
   database: "bamazon_db"
 });
-
-// connection.connect(function (err) {
-//   if (err) throw err;
-//   console.log("connected as id " + connection.threadId);
-//   afterConnection();
-// });
 
 connection.connect(function (err) {
   if (err) {
@@ -30,92 +25,95 @@ connection.connect(function (err) {
 });
 
 function showProducts() {
+
   connection.query("SELECT * FROM products", function (err, res) {
     if (err) throw err;
     console.table(res);
-    promptUserForItem();
+
+    promptUserForItem(res);
   });
 }
 
-function promptUserForItem(inventory) {
+function promptUserForItem(stock_quantity) {
   inquirer
     .prompt([
       {
         type: "input",
         name: "choice",
-        message: "What is the ID of the item you would like to buy? [Escape with E]",
+        message: "What is the ID of the item you would like to buy? [Press 'E' to Escape]",
         validate: function (val) {
           return !isNaN(val) || val.toLowerCase() === "e";
         }
       }
     ])
-
     .then(function (val) {
-      checkIfShouldExit(val.choice);
+      checkToEscape(val.choice);
       var choiceId = parseInt(val.choice);
-      var product =checkInventory(choiceId, inventory);
+      var product = checkstock_quantity(choiceId, stock_quantity);
 
       if (product) {
-        customerQuantityChoice(product);
+
+        promptUserForQuantity(product);
       }
       else {
+
         console.log("\nThis item is not available.");
         showProducts();
       }
     });
 }
 
-function customerQuantityChoice(product) {
+function promptUserForQuantity(product) {
   inquirer
     .prompt([
       {
         type: "input",
         name: "quantity",
-        message: "How many would you like? [Escape with E]",
-        validate: function(val) {
+        message: "How many would you like? [Press 'E' to Escape]",
+        validate: function (val) {
           return val > 0 || val.toLowerCase() === "e";
         }
       }
     ])
-    .then(function(val) {
-      checkIfShouldExit(val.quantity);
+    .then(function (val) {
+      checkToEscape(val.quantity);
       var quantity = parseInt(val.quantity);
 
       if (quantity > product.stock_quantity) {
-        console.log("\nNot Enough Product to fulfill order.");
+        console.log("\nThere's not enough product to fulfill order. Sorry! Please choose a lower quantity or another item.");
         showProducts();
       }
       else {
+
         buyProduct(product, quantity);
       }
     });
-  }
+}
 
-  function buyProduct(product, quantity) {
-    connection.query("UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ?",
-      [quantity, product.item_id],
-      function (err, res) {
-        console.log("\nPurchse Successful " + quantity + " " + product.product_name + "  Your total is.." + product.price + " \n");
-        showProducts();
-        //checkInventory();
-      }
-    );
-  }
+function buyProduct(product, quantity) {
+  connection.query(
+    "UPDATE products SET stock_quantity = stock_quantity - ? WHERE item_id = ?",
+    [quantity, product.item_id],
+    function (err, res) {
+      console.log("\nPurchase of: " + quantity + " " + product.product_name + "s" + " Successful!" + "\nYour total is  " + "$" + product.price * quantity);
+      showProducts();
+    }
+  );
+}
 
-function checkInventory(choiceId, inventory) {
-  for (var i = 0; i < inventory.length; i++) {
-    if (inventory[i].item_id === choiceId) {
-      return inventory[i];
+function checkstock_quantity(choiceId, stock_quantity) {
+  for (var i = 0; i < stock_quantity.length; i++) {
+    if (stock_quantity[i].item_id === choiceId) {
+      return stock_quantity[i];
     }
   }
-  // Otherwise return null
+
   return null;
 }
-function checkIfShouldExit(choice) {
+
+function checkToEscape(choice) {
   if (choice.toLowerCase() === "e") {
-    console.log("Enjoy your purchase!");
+    console.log("Thanks for shopping, Goodbye!");
     process.exit(0);
   }
 }
-
-
