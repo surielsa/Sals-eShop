@@ -6,3 +6,4 @@ In this activity, I created an Amazon-like storefront with the MySQL skills I le
 The app will take in orders from customers and deplete stock from the store's inventory. 
 
 
+![alt text] (Homework/bamazon/images/bamazon_database.png "MySQL Database")
