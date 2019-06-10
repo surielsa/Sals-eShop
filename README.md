@@ -12,10 +12,15 @@ The app will take in orders from customers and deplete stock from the store's in
 
 I created the database below and added the values to the table manually. 
 
+# Bamazon MySQL Database
+
 ![](images/bamazon_database.png)
 
+# Bamazon MySql Table
 
 ![](images/bamazon_mysql_table.png)
+
+# How the App Works
 
 Then I create the js file that would use the database table information to mimic the customer purchases on this e-commerce like app. Below is the process as of this app worked using NodeJs.
 
