@@ -22,7 +22,7 @@ I created the database below and added the values to the table manually.
 
 # How the App Works
 
-Then I create the js file that would use the database table information to mimic the customer purchases on this e-commerce like app. Below is the process as of this app worked using NodeJs.
+Then I created the js file that would use the database table information to mimic the customer purchases on this e-commerce like app. Below is the process as of this app worked using NodeJs.
 
 
 ![](images/bamazonjs1.png)
