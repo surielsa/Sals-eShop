@@ -1,6 +1,7 @@
 # Bamazon
 
-https://surielsa.github.io/bamazon/
+https://surielsa.github.io/Sals-eShop/
+
 
 By: Sal Suriel
 
